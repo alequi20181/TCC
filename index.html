@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>agendabem+</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">agendabem<span>+</span></div>
+    <nav>
+      <button class="nav-btn active" onclick="mostrarCalendario()">🗓️ Calendário</button>
+      <button class="nav-btn" onclick="mostrarLista()">📋 Lista</button>
+      <button class="nav-btn" onclick="adicionarCompromisso()">＋ Novo</button>
+      <button class="access-btn" onclick="alternarAcessibilidade()">♿ Acessibilidade</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="calendar-card">
+      <div class="calendar-head">
+        <button class="round-btn" onclick="mudarMes(-1)"></button>
+        <h1 id="monthTitle"></h1>
+        <button class="round-btn" onclick="mudarMes(1)"></button>
+      </div>
+
+      <div class="weekdays">
+        <div>DOM</div><div>SEG</div><div>TER</div><div>QUA</div>
+        <div>QUI</div><div>SEX</div><div>SÁB</div>
+      </div>
+
+      <div id="calendar" class="calendar-grid"></div>
+      <div id="list" class="list-view hidden"></div>
+    </section>
+
+    <section class="day-section">
+      <div class="day-toolbar">
+        <h2 id="selectedTitle"></h2>
+        <div class="actions">
+          <button class="outline-btn" onclick="adicionarMarcador()">🏷️ Marcador</button>
+          <button class="primary-btn" onclick="adicionarCompromisso()">＋ Compromisso</button>
+        </div>
+      </div>
+
+      <div id="details" class="details-card"></div>
+      <button class="today-btn" onclick="voltarHoje()">Voltar para hoje</button>
+    </section>
+  </main>
+
+  <footer><strong>agendabem+</strong> — Simples, fácil e para todos</footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
