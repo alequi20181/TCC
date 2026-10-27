@@ -3,52 +3,177 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>agendabem+</title>
+  <title>agendabem+ | Agendamento de Consultas</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">agendabem<span>+</span></div>
-    <nav>
-      <button class="nav-btn active" onclick="mostrarCalendario()">🗓️ Calendário</button>
-      <button class="nav-btn" onclick="mostrarLista()">📋 Lista</button>
-      <button class="nav-btn" onclick="adicionarCompromisso()">＋ Novo</button>
-      <button class="access-btn" onclick="alternarAcessibilidade()">♿ Acessibilidade</button>
-    </nav>
+
+  <header>
+    <div class="topbar">
+      <div class="brand">agendabem<span>+</span></div>
+      <nav id="top-nav" class="hidden">
+        <button class="nav-btn active" id="btn-menu-inicio" onclick="irParaEtapa('inicio')">Início</button>
+        <button class="access-btn" onclick="toggleMenuAcessibilidade()">♿ Acessibilidade</button>
+      </nav>
+    </div>
+
+    <!-- Painel de Acessibilidade Flutuante -->
+    <div id="accessibility-panel" class="accessibility-drawer hidden">
+      <div class="drawer-content">
+        <span>Ajustes de Leitura</span>
+        <div class="drawer-actions">
+          <button class="panel-btn" onclick="alterarFonte()">A+ Tamanho do Texto</button>
+          <button class="panel-btn" onclick="alternarContraste()">👁 Alto Contraste</button>
+          <button class="panel-btn" onclick="alternarDislexia()">📖 Fonte Fácil</button>
+        </div>
+      </div>
+    </div>
   </header>
 
   <main>
-    <section class="calendar-card">
-      <div class="calendar-head">
-        <button class="round-btn" onclick="mudarMes(-1)"></button>
-        <h1 id="monthTitle"></h1>
-        <button class="round-btn" onclick="mudarMes(1)"></button>
+    <!-- 1. LOGIN -->
+    <section id="step-login" class="step-container">
+      <div class="auth-card">
+        <h2>Entrar no Sistema</h2>
+        <p>Acesse com suas credenciais para gerenciar seus agendamentos.</p>
+        <div class="form-group">
+          <label for="login-email">E-mail ou CPF</label>
+          <input type="text" id="login-email" placeholder="Digite seu e-mail ou CPF">
+        </div>
+        <div class="form-group">
+          <label for="login-senha">Senha</label>
+          <input type="password" id="login-senha" placeholder="Digite sua senha">
+        </div>
+        <button class="primary-btn w-100" onclick="executarLogin()">Entrar</button>
       </div>
-
-      <div class="weekdays">
-        <div>DOM</div><div>SEG</div><div>TER</div><div>QUA</div>
-        <div>QUI</div><div>SEX</div><div>SÁB</div>
-      </div>
-
-      <div id="calendar" class="calendar-grid"></div>
-      <div id="list" class="list-view hidden"></div>
     </section>
 
-    <section class="day-section">
-      <div class="day-toolbar">
-        <h2 id="selectedTitle"></h2>
-        <div class="actions">
-          <button class="outline-btn" onclick="adicionarMarcador()">🏷️ Marcador</button>
-          <button class="primary-btn" onclick="adicionarCompromisso()">＋ Compromisso</button>
+    <!-- 2. INÍCIO -->
+    <section id="step-inicio" class="step-container hidden">
+      <div class="welcome-card">
+        <h1>Olá, Paciente!</h1>
+        <p>Bem-vindo ao seu painel de saúde. O que deseja fazer hoje?</p>
+        <div class="dashboard-actions">
+          <button class="menu-block-btn" onclick="irParaEtapa('escolher-atendimento')">
+            <span class="icon">🗓️</span>
+            <strong>Agendar Nova Consulta</strong>
+            <small>Marque atendimentos SUS ou Particular</small>
+          </button>
+          <button class="menu-block-btn outline" onclick="alert('Funcionalidade de histórico em desenvolvimento.')">
+            <span class="icon">📋</span>
+            <strong>Minhas Consultas</strong>
+            <small>Veja seus horários já confirmados</small>
+          </button>
         </div>
       </div>
+    </section>
 
-      <div id="details" class="details-card"></div>
-      <button class="today-btn" onclick="voltarHoje()">Voltar para hoje</button>
+    <!-- 3. ESCOLHER ATENDIMENTO -->
+    <section id="step-escolher-atendimento" class="step-container hidden">
+      <div class="card-flow">
+        <button class="back-link" onclick="irParaEtapa('inicio')">← Voltar</button>
+        <h2>Escolha o tipo de atendimento</h2>
+        <div class="flow-options">
+          <button class="option-btn" onclick="selecionarAtendimento('SUS')">
+            <strong>SUS</strong>
+            <small>Atendimento público e integrado</small>
+          </button>
+          <button class="option-btn" onclick="selecionarAtendimento('Particular / Convênio')">
+            <strong>Particular / Convênio</strong>
+            <small>Rede credenciada e privada</small>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. ESPECIALIDADE -->
+    <section id="step-especialidade" class="step-container hidden">
+      <div class="card-flow">
+        <button class="back-link" onclick="irParaEtapa('escolher-atendimento')">← Voltar</button>
+        <h2>Selecione a Especialidade</h2>
+        <div class="flow-options vertical" id="lista-especialidades">
+          <!-- Gerado dinamicamente via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. PROFISSIONAL / UNIDADE -->
+    <section id="step-profissional" class="step-container hidden">
+      <div class="card-flow">
+        <button class="back-link" onclick="irParaEtapa('especialidade')">← Voltar</button>
+        <h2>Selecione o Profissional ou Unidade</h2>
+        <div class="flow-options vertical" id="lista-profissionais">
+          <!-- Gerado dinamicamente via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. DATA E HORÁRIO -->
+    <section id="step-data-horario" class="step-container hidden">
+      <div class="card-flow">
+        <button class="back-link" onclick="irParaEtapa('profissional')">← Voltar</button>
+        <h2>Escolha Data e Horário</h2>
+        
+        <!-- Módulo de Calendário Integrado -->
+        <div class="calendar-card">
+          <div class="calendar-head">
+            <button class="round-btn" onclick="mudarMes(-1)">‹</button>
+            <h1 id="monthTitle">Setembro 2026</h1>
+            <button class="round-btn" onclick="mudarMes(1)">›</button>
+          </div>
+          <div class="weekdays">
+            <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+          </div>
+          <div id="calendar" class="calendar-grid"></div>
+        </div>
+
+        <div class="time-picker-section">
+          <h3 id="selectedTitle">Selecione um dia no calendário</h3>
+          <div class="time-slots hidden" id="horarios-container">
+            <!-- Injetado dinamicamente via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. CONFIRMAR -->
+    <section id="step-confirmar" class="step-container hidden">
+      <div class="card-flow">
+        <button class="back-link" onclick="irParaEtapa('data-horario')">← Voltar</button>
+        <h2>Confirme os dados do seu agendamento</h2>
+        
+        <div class="summary-box">
+          <div class="summary-item"><strong>Tipo:</strong> <span id="summary-tipo">-</span></div>
+          <div class="summary-item"><strong>Especialidade:</strong> <span id="summary-especialidade">-</span></div>
+          <div class="summary-item"><strong>Médico / Local:</strong> <span id="summary-medico">-</span></div>
+          <div class="summary-item"><strong>Data:</strong> <span id="summary-data">-</span></div>
+          <div class="summary-item"><strong>Horário:</strong> <span id="summary-horario">-</span></div>
+        </div>
+
+        <button class="primary-btn w-100" style="margin-top: 20px;" onclick="finalizarAgendamento()">Confirmar Agendamento</button>
+      </div>
+    </section>
+
+    <!-- 8. CONSULTA AGENDADA -->
+    <section id="step-concluido" class="step-container hidden">
+      <div class="success-card">
+        <div class="success-icon">✓</div>
+        <h2>Consulta Agendada com Sucesso!</h2>
+        <p>Seu comprovante e as instruções de preparação foram enviados para o e-mail cadastrado.</p>
+        
+        <div class="ticket-box">
+          <h3 id="ticket-protocolo">Protocolo: #AG92834</h3>
+          <p id="ticket-detalhes"></p>
+        </div>
+
+        <button class="primary-btn" onclick="reiniciarFluxo()">Voltar ao Início</button>
+      </div>
     </section>
   </main>
 
-  <footer><strong>agendabem+</strong> — Simples, fácil e para todos</footer>
+  <footer>
+    agendabem+ — Simplicidade em primeiro lugar
+  </footer>
 
   <script src="script.js"></script>
 </body>
